@@ -19,6 +19,9 @@ classifiers = [
 ]
 dependencies = []
 
+[project.scripts]
+text-normalizer = "text_normalizer.__main__:main"
+
 [project.urls]
 Homepage = "https://github.com/Trysac/u215-text-normalizer"
 Source = "https://github.com/Trysac/u215-text-normalizer"
