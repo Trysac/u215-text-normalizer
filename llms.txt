@@ -1,0 +1,16 @@
+# text-normalizer
+
+> Normalize text for indexing with an explicit, ordered rule set: zero-width removal, control characters, Unicode NFKC, curly quotes, dashes and whitespace, idempotent Python package `trysac-text-normalizer`, import name `text_normalizer`, MIT licensed,
+> Python >= 3.10, no runtime dependencies.
+
+## Docs
+
+- [README](README.md): problem, install, usage example
+- [AGENTS](AGENTS.md): commands, folder map, conventions, limits
+- [Architecture](docs/ARCHITECTURE.md): shape of the package and its public API
+- [Testing](docs/TESTING.md): how to run and extend the tests
+
+## Optional
+
+- [Stack](docs/STACK.md): tools used and discarded
+- [Changelog](CHANGELOG.md): release history
