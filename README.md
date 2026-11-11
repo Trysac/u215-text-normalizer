@@ -1,48 +1,50 @@
 # text-normalizer
 
-[![PyPI version](https://img.shields.io/pypi/v/trysac-text-normalizer)](https://pypi.org/project/trysac-text-normalizer/)
-[![License: MIT](https://img.shields.io/pypi/l/trysac-text-normalizer)](LICENSE)
-[![CI](https://github.com/Trysac/u215-text-normalizer/actions/workflows/ci.yml/badge.svg)](https://github.com/Trysac/u215-text-normalizer/actions/workflows/ci.yml)
+Normalize text for indexing with an explicit, ordered rule set.
 
-Normalize text for indexing with an explicit, ordered rule set: zero-width removal, control characters, Unicode NFKC, curly quotes, dashes and whitespace, idempotent
+## Installation
 
-## Problem
-
-Describe in two or three sentences the concrete problem this utility solves, who hits it, and what
-they do today without it. Replace this paragraph when the first real feature lands.
-
-## Install
-
-```sh
+```bash
 pip install trysac-text-normalizer
-# or
-uv add trysac-text-normalizer
 ```
-
-Requires Python 3.10 or newer. No runtime dependencies.
 
 ## Usage
 
 ```python
-import text_normalizer
+from text_normalizer import normalize, Options, explain
 
-# normalize() trims surrounding whitespace and lower-cases the text.
-print(text_normalizer.normalize("  Hello World "))  # -> "hello world"
+normalize("\ufeff\u201cHello\u201d\u00a0world \u2014 it\u2019s \ufb01ne")
+# '"Hello" world - it\'s fine'
 
-# Blank input is rejected explicitly instead of returning an empty string.
-try:
-    text_normalizer.normalize("   ")
-except ValueError as exc:
-    print(f"rejected: {exc}")
+report = explain("\u201ca\u201d")
+print(report.changed)  # ('quotes',)
 ```
 
-## Documentation
+## CLI
 
-- [Architecture](docs/ARCHITECTURE.md) and [decisions](docs/decisions/)
-- [Testing](docs/TESTING.md) and [security](docs/SECURITY.md)
-- [Project record](docs/PROJECT.md) and [stack](docs/STACK.md)
-- [Changelog](CHANGELOG.md) and [contributing guide](CONTRIBUTING.md)
+```bash
+echo '\u201cHello\u201d' | text-normalizer --no-quotes
+```
 
-## License
+## Rules
 
-[MIT](LICENSE) (c) 2026 Miguel Gomez
+Applied in this order:
+
+1. **zero_width**: Remove U+200B, U+2060, U+FEFF, U+00AD (keep ZWJ/ZWNJ).
+2. **controls**: Convert CRLF/CR to LF; remove C0/C1 controls except tab and LF.
+3. **unicode**: Apply Unicode normalization (default NFKC; use `--form NFC` or `none`).
+4. **quotes**: Curly quotes → straight quotes (guillemets kept).
+5. **dashes**: Various dashes (including U+2212) → hyphen-minus.
+6. **whitespace**: Replace non‑LF whitespace with space, collapse spaces, strip line ends,
+   collapse 3+ LFs to two, strip overall.
+
+## API
+
+- `Options` (frozen dataclass): configure rules and `max_chars`.
+- `normalize(text, options=Options()) -> str`
+- `explain(text, options=Options()) -> Report` (contains `text` and `changed` tuple)
+- `NormalizerError` with `code` (`invalid_option`, `input_too_large`, `invalid_input`)
+
+## Development
+
+See `CONTRIBUTING.md` for details.

@@ -9,4 +9,5 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added text normalization utility with ordered rule set, report, and CLI.
 - Initial project structure from the factory utility template.
